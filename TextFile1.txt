@@ -1,0 +1,354 @@
+1.Una interfaz que permita lo siguiente 
+
+• Imprimir el inventario de productos con la informacion: 
+	Código (en alfanumérico), 
+	Nombre del producto, 
+	Precio 
+	cantidad en inventario
+
+• Buscar un producto por su código, o por su nombre:
+	lo  mismo que el punto anterior: código, nombre, precio y cantidad en inventario.
+	Al buscar por nombre debe poder encontrar todos los productos que contengan parte del nombre. 
+	Ejemplo: Si el producto se llama “yogurt”, y el usuario ingresa “yog”, el sistema debe ser 
+	capaz de imprimir todos los productos que tengan ese string (en el mismo orden)
+
+
+• Ingresar productos al inventario (compras de la tienda):
+	Si el inventario cuenta con el producto, debe actualizar la cantidad
+	de lo contrario debe crear el producto con todos los datos
+
+• Egresar productos del inventario (ventas de la tienda):
+	Si el inventario no cuenta con este, print “producto no disponible”
+	
+	Si el inventario cuenta con el producto, pero no hay sufintes en el inventario, 
+	print “hay disponibilidad de n productos, ¿desea tal cantidad?” y proceder a descontarlo del inventario
+	
+	Si el inventario cuenta con el producto, y hay suficiente, simplemente lo descuenta y continua.
+
+
+2. Debe permitir actualizar los datos de un producto: su código, nombre, precio y/o cantidad en el inventario
+
+3. Debe permitir obtener un listado de los productos ordenados por: Código o nombre del producto, 
+según seleccione el usuario 
+
+4. El sistema debe permitir cargar y descargar el inventario en un archivo binario, de manera que 
+cuando se salga de la aplicación los datos persistan entre dsierentes sesiones.
+
+
+b) Menú de opciones inicial: 5%
+c) Listado de productos (según alguna opción del menú): 10%
+d) Ordenamiento de productos (según alguna opción del menú): 15%
+e) Carga y descarga del archivo de datos: 15%
+f) Búsqueda de un producto por nombre o código: 15%
+g) Ingreso de productos al inventario: 15%
+h) Descarga de productos del inventario: 15%
+
+
+PSEUDOCODIGO:
+
+
+func borrar_la_terminal():
+	sistema "clr"
+fin funcion
+
+
+func merge_sort(inventario, decicion)
+    si la longitud del invetario <= 1:
+        retornar la lista
+
+    mid = longitud de la lista // 2
+    parte_izquierda = merge_sort(lista[0 hasta mid], decicion)
+    parte_derecha = merge_sort(lista[mid hasta el final de la lista], decicion)
+
+    lista_final = []
+    i = 0
+    k = 0
+    mientras ((i < la longitud de la parte_izquierda) y (k < la longitud de la parte_derecha)):
+        si parte_izquierda[i][decicion] <= parte_derecha[k][decicion]:
+            agregar a la lista_final la parte_izquierda[i]
+            i = i + 1
+        si no:
+            agregar a la lista_final la parte_derecha[k]
+            k = k + 1
+		fin si
+	fin mientras
+
+    mientras i < la longitud de la parte_izquierda:
+        agregar a la lista_final la parte_izquierda[i]
+        i  = i + 1
+	fin mientras
+    mientras k < la longitud de la parte_derecha:
+        agregar a la lista_final la parte_derecha[k]
+        k = k + 1
+	fin mientras
+
+    return(lista_final)
+fin funcion
+
+func imprimir_el_inventario()
+	
+	imprimir "Opcion 1: Lista ordenanda por nombre."
+	imprimir "Opcion 2: Lista ordenanda por codigo."
+	input segunda_opcion
+	
+	borrar_la_terminal()
+	
+	con inventario.dat abierto en modo lectura binario:
+		lineas = todo el contenido de inventario.dat
+		
+		resultado =merge_sort(lineas, segunda_opcion)
+	
+		x=0
+		por x en resultado :
+			imprimir ( "Nombre: {resultado[x][0]}")
+			imprimir ( "Codigo: {resultado[x][1]}")
+			imprimir ( "Precio: {resultado[x][2]}")
+			si resultado [x][2] = 0:
+				imprimir "producto no disponible"
+			si no:
+				imprimir ( "cantidad disponible: {resultado[x][3]}")
+			fin si
+	cerrar inventario.dat
+fin funcion
+				
+					
+func buscar_un_producto() 
+	conseguido = -1
+	imprimir "Opcion 1:	Buscar por nombre."
+	imprimir "Opcion 2: Buscar por codigo."
+	input segunda_opcion
+
+	borrar_la_terminal()
+
+	con inventario.dat abierto en modo lectura binario:
+		lineas = todo el contenido de inventario.dat
+		
+		resultado =merge_sort(lineas, segunda_opcion)
+
+		imprimir "Que producto quieres buscar?"
+		ingresar producto
+	
+		si segunda opcion = 1:
+			x=0
+			para cada x en el inventario:
+				usando regrex 
+				si el regrex de producto = x:
+					conseguido = resultado[x]
+					imprimir "Nombre: {resultado[x][0]}"
+					imprimir "Codigo: {resultado[x][1]}"
+					imprimir "Precio: {resultado[x][2]}"
+					si reg[3] = 0:
+						imprimir "producto no disponible"
+					si no:
+						imprimir "Cantidad disponible: {resultado[x][3]}"
+					fin si
+
+				si no: 
+					imprimir "no se encontro"
+				fin si
+		fin si
+		si no:
+			x = 0
+			y = logitud de la lista -1
+		    z = producto
+		    
+		    found = falso
+		    mientras x <= y:
+		        medio = (x+y)//2
+		        si (resultado[medio][1] == z ):
+		            found = verdad
+		            break;
+		        si (resultado[medio][1] > z):
+		            y=medio-1
+		        si no:
+		            x=medio+1
+				fin si
+			fin mientras
+		
+		    si found es igual a verdad:
+					conseguido = resultado[medio]
+					imprimir "Nombre: {resultado[medio][0]}"
+					imprimir "Codigo: {resultado[medio][1]}"
+					imprimir "Precio: {resultado[medio][2]}"
+					si reg[3] = 0:
+						imprimir "producto no disponible"
+					si no:
+						imprimir "Cantidad disponible: {resultado[medio][3]}"
+					fin si
+
+
+		    si no:
+		        imprimir "no se encontro el productoo"
+			fin si
+		fin si
+		retornar conseguido
+fin funcion
+
+
+modificar_un_producto():
+	producto = buscar_un_producto()
+	borrar_la_terminal()
+	si producto = -1
+		imprimir "No se encontro el producto"
+	si no:
+		imprimir "Que desea Cambiar:"
+		imprimir "Opcion 1 Nombre: {producto[0]}"
+		imprimir "Opcion 2 Codigo: {producto[1]}"
+		imprimir "Opcion 3 Precio: {producto[2]}"
+		si reg[3] = 0:
+			imprimir "Opcion 4 producto no disponible"
+		si no:
+			imprimir "Opcion 4 Cantidad disponible: {producto[3]}"
+		fin si
+	fin si
+		ingresar opcion
+
+	selecion de casos(opcion)
+		caso 1:
+			imprimir "Indique el nuevo nombre: "
+			ingresar nuevo_nombre
+			producto[0] = nuevo_nombre
+		caso 2:
+			imprimir "Indique el nuevo codigo: "
+			ingresar nuevo_codigo
+			producto[1] = nuevo_codigo
+		caso 3:
+			imprimir "Indique el nuevo precio: "
+			ingresar nuevo_precio
+			producto[2] = nuevo_precio
+		caso 4:
+			imprimir "Indique la cantidad en el inventario: "
+			ingresar nuevo_inventario
+			producto[3] = nuevo_invetario
+fin funcion
+			
+
+procedimiento agregar_un_producto(inventario, num_productos):
+    imprimir "ingrese codigo del producto: "
+    leer codigo_nuevo
+    
+    indice = -1
+    para i desde 0 hasta num_productos-1 hacer:
+        si inventario[i].codigo == codigo_nuevo entonces:
+            indice = i
+            salir del bucle
+        fin si
+    fin para
+    
+    si indice != -1 entonces:
+        imprimir "producto encontrado: " + inventario[indice].nombre
+        imprimir "cantidad actual: " + inventario[indice].cantidad
+        imprimir "ingrese cantidad a agregar: "
+        leer cantidad_agregar
+        
+        inventario[indice].cantidad = inventario[indice].cantidad + cantidad_agregar
+        imprimir "cantidad actualizada: " + inventario[indice].cantidad
+    sino:
+        imprimir "nuevo producto. ingrese datos:"
+        imprimir "nombre: "
+        leer nombre_nuevo
+        imprimir "precio: "
+        leer precio_nuevo
+        imprimir "cantidad inicial: "
+        leer cantidad_inicial
+        
+        nuevo_producto.codigo = codigo_nuevo
+        nuevo_producto.nombre = nombre_nuevo
+        nuevo_producto.precio = precio_nuevo
+        nuevo_producto.cantidad = cantidad_inicial
+        
+        inventario[num_productos] = nuevo_producto
+        num_productos = num_productos + 1
+        
+        imprimir "producto agregado exitosamente"
+    fin si
+    
+    retornar inventario, num_productos
+
+fin funcion
+	
+
+
+procedimiento vender_producto(inventario, num_productos):
+    imprimir "ingrese codigo del producto a vender: "
+    leer codigo_buscar
+    
+    indice = -1
+    para i desde 0 hasta num_productos-1 hacer:
+        si inventario[i].codigo == codigo_buscar entonces:
+            indice = i
+            salir del bucle
+        fin si
+    fin para
+    
+    si indice == -1 entonces:
+        imprimir "producto no disponible"
+    sino:
+        imprimir "producto: " + inventario[indice].nombre
+        imprimir "cantidad disponible: " + inventario[indice].cantidad
+        imprimir "precio unitario: " + inventario[indice].precio
+        
+        imprimirr "ingrese cantidad a vender: "
+        leer cantidad_vender
+        
+        si cantidad_vender > inventario[indice].cantidad entonces:
+            imprimir "solo hay disponibilidad de " + inventario[indice].cantidad + " productos" + \n
+            imprimir "¿desea vender " + inventario[indice].cantidad + " unidades? (si/no)"
+            leer respuesta
+            
+            si respuesta == 'sí' entonces:
+                total_venta = inventario[indice].cantidad * inventario[indice].precio
+                imprimir "vendiendo " + inventario[indice].cantidad + " unidades"
+                imprimir "total de la venta: " + total_venta
+                
+                inventario[indice].cantidad = 0
+                imprimir "producto agotado"
+            sino:
+                imprimir "venta cancelada"
+            fin si
+        sino:
+            total_venta = cantidad_vender * inventario[indice].precio
+            imprimir "vendiendo " + cantidad_vender + " unidades"
+            imprimir "total de la venta: " + total_venta
+            
+            inventario[indice].cantidad = inventario[indice].cantidad - cantidad_vender
+            imprimir "nueva cantidad en inventario: " + inventario[indice].cantidad
+        fin si
+    fin si
+    
+    retornar inventario
+
+fin funcion
+		
+			
+
+func menu()
+	opcion_elegida
+	segunda_opcion
+
+	imprimir   "que desea hacer? \n
+				opcion 1: imprimir el inventario 
+				opcion 2: buscar un producto especsiico 
+				opcion 3: agregar un producto al inventario 
+				opcion 4: egresar un producto al inventario 
+				opcion 5: modificar un producto del inventario"
+
+	ingresar opcion_elegida
+	borrar_la_termial()
+
+	listas de casos(opcion_elegida):
+
+		caso 1:
+			imprimir_el inventario()
+
+		caso 2:
+			buscar_un_producto()
+		caso 3:
+			agregar_un_producto()
+		caso 4:
+			vender_producto()
+		caso 5:
+			modificar_un_producto()
+fin funcion
+
+
