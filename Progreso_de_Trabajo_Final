@@ -1,0 +1,165 @@
+import os
+import pickle
+
+# CAMBIOS REALIZADOS >> funcion 2 completa y la funcion 3 que es la busqueda binaria "sincronizada" con el mergesort, funcion 1 (que es agregar) sea persistente en el .bin sin que se borren los datos al reiniciar.
+def borra_la_pantalla():
+    os.system("cls" if os.name == "nt" else "clear")
+
+def escoger_una_opcion(max:int, min:int):
+    try:
+        opcion = int(input("\t"))
+        if ((opcion < min) or (opcion > max)):
+            print("\t\033[4;31mOPCION INVALIDA\033[0m")
+            return escoger_una_opcion(max, min)
+        return opcion
+    except:
+        print("\t\033[4;31mOPCION INVALIDA\033[0m")
+        return escoger_una_opcion(max,min)
+
+# --- ALGORITMOS (ORDENAMIENTO Y BÚSQUEDA) ---
+def merge_sort(lista, opcion:int):
+    if len(lista) <= 1:
+        return lista
+    mid = len(lista) // 2
+    left_part = merge_sort(lista[:mid], opcion)
+    right_part = merge_sort(lista[mid:], opcion)
+    
+    lista_final = []
+    i = k = 0
+    while i < len(left_part) and k < len(right_part):
+        if left_part[i][opcion] <= right_part[k][opcion]:
+            lista_final.append(left_part[i])
+            i += 1
+        else:
+            lista_final.append(right_part[k])
+            k += 1
+    lista_final.extend(left_part[i:])
+    lista_final.extend(right_part[k:])
+    return lista_final
+
+def busqueda_binaria(lista, objetivo, indice_columna):
+    bajo = 0
+    alto = len(lista) - 1
+    while bajo <= alto:
+        medio = (bajo + alto) // 2
+        valor_actual = lista[medio][indice_columna]
+        
+        # Normalización para búsqueda por nombre (texto)
+        if indice_columna == 1:
+            valor_comparar = str(valor_actual).lower()
+            objetivo_comparar = str(objetivo).lower()
+        else:
+            valor_comparar = valor_actual
+            objetivo_comparar = objetivo
+
+        if valor_comparar == objetivo_comparar:
+            return lista[medio]
+        elif valor_comparar < objetivo_comparar:
+            bajo = medio + 1
+        else:
+            alto = medio - 1
+    return None
+
+
+def imprimir_inventario():
+    print("\t\033[4;31mIMPRIMIR EL INVENTARIO\033[0m")
+    print("\t\033[4;31mOPCION 1\033[0m LISTA ORDENADA POR CODIGO")
+    print("\t\033[4;31mOPCION 2\033[0m LISTA ORDENADA POR NOMBRE")
+    opcion = (escoger_una_opcion(2, 1)) - 1
+    
+    inventario = "inventario_productos.bin"
+    if os.path.exists(inventario):
+        with open(inventario, "rb") as f:
+            lista = pickle.load(f)
+            resultado = merge_sort(lista, opcion)
+            
+            print("\n\t" + "="*50)
+            for every in resultado:
+                estado = f"CANTIDAD: {every[3]}" if every[3] > 0 else "NO DISPONIBLE"
+                print(f"\tCOD: {every[0]} | NOMBRE: {every[1]} | PRECIO: ${every[2]} | {estado}")
+            print("\t" + "="*50)
+    else:
+        print("\t\033[4;31mEL INVENTARIO ESTA VACIO\033[0m")
+
+def buscar_producto():
+    print("\t\033[4;31mBUSCAR UN PRODUCTO ESPECIFICO\033[0m")
+    print("\t\033[4;31mOPCION 1\033[0m BUSCAR POR CODIGO")
+    print("\t\033[4;31mOPCION 2\033[0m BUSCAR POR NOMBRE")
+    opcion = (escoger_una_opcion(2, 1)) - 1
+
+    inventario = "inventario_productos.bin"
+    if os.path.exists(inventario):
+        with open(inventario, "rb") as f:
+            lista = pickle.load(f)
+        
+        lista_ordenada = merge_sort(lista, opcion)
+        
+        if opcion == 0:
+            objetivo = int(input("\tIngrese el CODIGO: "))
+        else:
+            objetivo = input("\tIngrese el NOMBRE: ")
+
+        resultado = busqueda_binaria(lista_ordenada, objetivo, opcion)
+        if resultado:
+            print(f"\n\t\033[1;32mENCONTRADO:\033[0m {resultado[1]} - Stock: {resultado[3]} - Precio: {resultado[2]}")
+        else:
+            print("\t\033[4;31mPRODUCTO NO ENCONTRADO\033[0m")
+    else:
+        print("\tINVENTARIO VACIO")
+
+def agregar_producto():
+    print("\t\033[4;31mAGREGANDO PRODUCTO\033[0m")
+    inventario = "inventario_productos.bin"
+    lista = []
+    if os.path.exists(inventario):
+        with open(inventario, "rb") as f:
+            lista = pickle.load(f)
+
+    try:
+        codigo = int(input("\tCodigo: "))
+        if any(p[0] == codigo for p in lista):
+            print("\t\033[4;31mID YA EXISTE\033[0m"); return
+            
+        nombre = input("\tNombre: ")
+        precio = float(input("\tPrecio: "))
+        cantidad = int(input("\tCantidad: "))
+        
+        lista.append([codigo, nombre, precio, cantidad])
+        with open(inventario, "wb") as f:
+            pickle.dump(lista, f)
+        print("\t\033[1;32mGUARDADO EXITOSAMENTE\033[0m")
+    except ValueError:
+        print("\t\033[4;31mDATOS INVALIDOS\033[0m")
+
+def egresar_producto():
+    print("\tEGRESANDO PRODUCTO (RESTO DE STOCK)")
+    # Esta función restaría cantidad a un producto existente
+
+def modificar_producto():
+    print("\tMODIFICANDO PRODUCTO")
+    # Esta función permitiría cambiar precio o nombre
+
+def main():
+    while True:
+        print("\n\t\033[4;31m--- SISTEMA THE LAST OF US ---\033[0m")
+        print("\t1. IMPRIMIR INVENTARIO")
+        print("\t2. BUSCAR PRODUCTO")
+        print("\t3. AGREGAR PRODUCTO")
+        print("\t4. EGRESAR PRODUCTO")
+        print("\t5. MODIFICAR PRODUCTO")
+        print("\t6. SALIR")
+        
+        opcion = escoger_una_opcion(6, 1)
+        borra_la_pantalla()
+        
+        if opcion == 6: break
+        
+        match (opcion):
+            case 1: imprimir_inventario()
+            case 2: buscar_producto()
+            case 3: agregar_producto()
+            case 4: egresar_producto()
+            case 5: modificar_producto()
+
+if (__name__ == "__main__"):
+    main()
