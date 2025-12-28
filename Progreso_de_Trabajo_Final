@@ -88,7 +88,7 @@ def buscar_producto():
     opcion = (escoger_una_opcion(2, 1)) - 1
 
     inventario = "inventario_productos.bin"
-    if os.path.exists(inventario):
+    if os.path.exists(inventario): //quita esto muy ia.
         with open(inventario, "rb") as f:
             lista = pickle.load(f)
         
